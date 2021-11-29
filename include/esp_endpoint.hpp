@@ -6,20 +6,20 @@
 
 class ESPEndpoint {
 public:
-    // struct Value {
-    //     String name;
-    //     int value;
-    //     int (*callback)(int);
-    // };
+    struct Variable {
+        String name;
+        int value;
+        int (*callback)(int);
+    };
 
 private:
     WiFiServer server;
     String name;
-    // Value* values; int count;
+    Variable* values; int count;
     int extractValueFor(String name, String source);
 
 public:
-    ESPEndpoint(const char* ssid, const char* password, const char* name);//, Value* values, int count);
+    ESPEndpoint(const char* ssid, const char* password, const char* name, Variable values[], int count);
     void iterate();
 };
 
