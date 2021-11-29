@@ -16,7 +16,7 @@ private:
     WiFiServer server;
     String name;
     // Value* values; int count;
-    // int extractValueFor(String name, String source);
+    int extractValueFor(String name, String source);
 
 public:
     ESPEndpoint(const char* ssid, const char* password, const char* name);//, Value* values, int count);
