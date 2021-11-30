@@ -44,11 +44,12 @@ void ESPEndpoint::iterate() {
 }
 
 // -2 when `name` not found in `source`
-// -1 when no digits follow `name`
+// -1 when no `=` and digits follow `name`
 // else: returns number following `name`
 int ESPEndpoint::extractValueFor(String name, String source) {
     int val_start = source.indexOf(name) + name.length();
     if (val_start < (signed int)name.length()) return -2;
+    if (source[val_start++] != '=') return -1;
     int val_end = val_start;
     while (isdigit(source[val_end++]));
     if (val_end == val_start + 1) return -1;

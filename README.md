@@ -20,7 +20,7 @@ int my_callback(int my_var) {
 ...
 
 ESPEndpoint::Variable my_vars[] = {
-    { "my_var=", 0, my_callback },
+    { "my_var", 0, my_callback },
     ...
 };
 ```
@@ -44,11 +44,11 @@ my_endpoint.iterate();
 Your ESP will serve at its IP address and standard port and return a JSON dictionary including the following entries:
 
 - `name` with the server's given name if the requested path includes the string `info`
-- one or multiple given variables' names along with their current values if their full name is included in the requested path
+- one or multiple given variables' names along with their current values if their name is included in the requested path
 
-Any digits following a given variable's name will (greedily) be connected into an integer and the given variable's callback function will be called with this integer. The variable's value will be updated to become the return value of the callback. The return dictionary will then include this updated value. Multiple variable assignments can be separated by any URL-valid character that is not a digit.
+If the character `=` and digits follow a given variable's name, the digits will (greedily) be connected into an integer and the given variable's callback function will be called with this integer. The variable's value will be updated to become the return value of the callback. The return dictionary will then include this updated value. Multiple variable assignments can be separated by any URL-valid character that is not a digit.
 
-In the provided example the request `<IP>/my_var=` will return a dictionary including `my_var=`'s current value **without** executing the callback. The request `<IP>/my_var=10;info` will execute the callback, assign its return value `10` to `my_var=` and return the following JSON.
+In the provided example the request `<IP>/my_var` will return a dictionary with the key `my_var` and the variable's current value **without** executing the callback. The request `<IP>/my_var=10;info` will execute the callback, assign its return value `10` to `my_var` and return the following JSON.
 
 ```json
 {
