@@ -1,7 +1,7 @@
 #include "esp_endpoint.hpp"
 
-ESPEndpoint::ESPEndpoint(const char* ssid, const char* password, const char* name, ESPEndpoint::Variable values[], int count)
-: server(80), name(name), count(count) {
+ESPEndpoint::ESPEndpoint(const char* ssid, const char* password, const char* server_id, ESPEndpoint::Variable values[], int count)
+: server(80), id(server_id), count(count) {
     WiFi.begin(ssid, password);
     while (WiFi.status() != WL_CONNECTED) delay(3);
     this->server.begin();
@@ -20,27 +20,32 @@ void ESPEndpoint::iterate() {
 
     String request = client.readStringUntil('\r');
     client.println("HTTP/1.1 200 OK");
-    client.println("Content-type: text/json\n");
+    client.println("Connection: close");
+    client.println("Content-type: application/json\n");
     client.println("{");
 
-    int extr = this->extractValueFor("info", request);
+    int extr = this->extractValueFor("id", request);
+    bool leading_comma = false;
     if (extr + 2) {
-        client.print("    \"name\": \""); client.print(this->name); client.println("\",");
+        client.print("    \"id\": \""); client.print(this->id); client.print("\"");
+        leading_comma = true;
     }
 
     for (int i = 0; i < this->count; i++) {
         ESPEndpoint::Variable *var = this->values + i;
         extr = this->extractValueFor(var->name, request);
         if (extr > -2) {
+            if (leading_comma) client.println(",");
             client.print("    \""); client.print(var->name); client.print("\": ");
+            leading_comma = true;
             if (extr > -1) {
                 var->value = (var->callback)(extr);
             }
-            client.print(var->value); client.println(",");
+            client.print(var->value);
         }
     }
 
-    client.println("}");
+    client.println("\n}");
 }
 
 // -2 when `name` not found in `source`

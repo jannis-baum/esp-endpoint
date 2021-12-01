@@ -14,12 +14,12 @@ public:
 
 private:
     WiFiServer server;
-    String name;
+    String id;
     Variable* values; int count;
     int extractValueFor(String name, String source);
 
 public:
-    ESPEndpoint(const char* ssid, const char* password, const char* name, Variable values[], int count);
+    ESPEndpoint(const char* ssid, const char* password, const char* server_id, Variable values[], int count);
     void iterate();
 };
 
