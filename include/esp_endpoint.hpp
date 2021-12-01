@@ -3,6 +3,7 @@
 
 #include <Arduino.h>
 #include <ESP8266WiFi.h>
+#include <ESP8266WiFiGratuitous.h>
 
 class ESPEndpoint {
 public:
@@ -13,6 +14,7 @@ public:
     };
 
 private:
+    experimental::ESP8266WiFiGratuitous grat_arp;
     WiFiServer server;
     String id;
     Variable* values; int count;

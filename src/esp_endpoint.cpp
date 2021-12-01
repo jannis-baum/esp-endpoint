@@ -1,10 +1,12 @@
 #include "esp_endpoint.hpp"
 
 ESPEndpoint::ESPEndpoint(const char* ssid, const char* password, const char* server_id, ESPEndpoint::Variable values[], int count)
-: server(80), id(server_id), count(count) {
+: grat_arp(), server(80), id(server_id), count(count) {
     WiFi.begin(ssid, password);
     while (WiFi.status() != WL_CONNECTED) delay(3);
     this->server.begin();
+
+    this->grat_arp.stationKeepAliveSetIntervalMs();
 
     this->values = (ESPEndpoint::Variable*)malloc(this->count * sizeof(*(this->values)));
     memcpy(this->values, values, this->count * sizeof(*this->values));
