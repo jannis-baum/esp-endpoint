@@ -31,7 +31,7 @@ Next, create *one* instance of `ESPEndpoint` by providing your Wi-Fi's SSID and 
 ESPEndpoint my_endpoint { WIFI_SSID, WIFI_PASSWORD, "my endpoint" my_vars, 1 };
 ```
 
-At initialization, the endpoint will print its assigned IP address through the `Serial` connection if it is enabled. This is one way of finding out your ESP's IP address.
+At initialization, the endpoint will print its assigned IP address through the `Serial` connection if it is enabled. This is one way of finding out your ESP's IP address. Additionally, your ESP will frequently send gratuitous ARP requests to ensure presence in ARP cache of various devices, meaning you can always find it by running a simple `$ arp -a`.
 
 The only thing left to do now is call `ESPEndpoint::iterate()` in your run loop.
 
@@ -43,17 +43,20 @@ my_endpoint.iterate();
 
 Your ESP will serve at its IP address and standard port and return a JSON dictionary including the following entries:
 
-- `name` with the server's given name if the requested path includes the string `info`
+- `id` with the server's given name and `vars` with an array of variable names if the requested path includes the string `id`
 - one or multiple given variables' names along with their current values if their name is included in the requested path
 
 If the character `=` and digits follow a given variable's name, the digits will (greedily) be connected into an integer and the given variable's callback function will be called with this integer. The variable's value will be updated to become the return value of the callback. The return dictionary will then include this updated value. Multiple variable assignments can be separated by any URL-valid character that is not a digit.
 
-In the provided example the request `<IP>/my_var` will return a dictionary with the key `my_var` and the variable's current value **without** executing the callback. The request `<IP>/my_var=10;info` will execute the callback, assign its return value `10` to `my_var` and return the following JSON.
+In the provided example the request `<IP>/my_var` will return a dictionary with the key `my_var` and the variable's current value **without** executing the callback. The request `<IP>/my_var=10&id` will execute the callback, assign its return value `10` to `my_var` and return the following JSON.
 
 ```json
 {
-    "name": "my endpoint",
-    "my_var": 10,
+    "id": "my endpoint",
+    "vars": [
+        "my_var"
+    ],
+    "my_var": 10
 }
 ```
 
