@@ -9,11 +9,13 @@ class ESPEndpoint {
 public:
     struct Variable {
         String name;
+        String label;
         int value;
         int (*callback)(int);
         inline String json() {
             return "{ \"name\": \"" + this->name +
-                    "\", \"val\": " + String(this->value) + " }";
+                   "\", \"label\": \"" + this->label +
+                   "\", \"val\": " + String(this->value) + " }";
         } };
 
 private:
