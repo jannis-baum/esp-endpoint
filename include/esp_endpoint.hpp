@@ -11,7 +11,10 @@ public:
         String name;
         int value;
         int (*callback)(int);
-    };
+        inline String json() {
+            return "{ \"name\": \"" + this->name +
+                    "\", \"val\": " + String(this->value) + " }";
+        } };
 
 private:
     experimental::ESP8266WiFiGratuitous grat_arp;

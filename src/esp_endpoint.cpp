@@ -30,12 +30,12 @@ void ESPEndpoint::iterate() {
     bool leading_comma = false;
     if (extr + 2) {
         client.print("    \"id\": \""); client.print(this->id); client.println("\",");
-        client.println("    \"vars\": [");
+        client.print("    \"vars\": [");
         for (int i = 0; i < this->count; i++) {
-            if (i) client.println(",");
-            client.print("        \""); client.print((this->values + i)->name); client.print("\"");
+            if (i) client.print(", ");
+            client.print((this->values + i)->json());
         }
-        client.print("\n    ]");
+        client.print("]");
         leading_comma = true;
     }
 
